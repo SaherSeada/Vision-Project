@@ -4,10 +4,11 @@ import matplotlib.pyplot as plt
 import numpy as np
 from pathlib import Path
 
-images = Path('/test_images').glob('*.png')
+images = Path('test_images').glob('*.png')
 
-for image in images:
-    plt.figure(number-1)
+for imagePath in images:
+    image = cv2.imread(str(imagePath))
+    plt.figure("Original Image")
     plt.imshow(image)
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     blurred = cv2.GaussianBlur(gray, (5, 5), 0)
@@ -18,27 +19,20 @@ for image in images:
     cnts = cv2.findContours(thresh.copy(), cv2.RETR_EXTERNAL, cv2.CHAIN_APPROX_SIMPLE)
     cnts = imutils.grab_contours(cnts)
     largest_contour = max(cnts, key=cv2.contourArea)
-    # cnts = imutils.grab_contours(cnts)
-    # digitCnts = []
-    # loop over the digit area candidates
-    # compute the bounding box of the contour
     (x, y, w, h) = cv2.boundingRect(largest_contour)
-    # if the contour is sufficiently large, it must be a digit
-    # digitCnts.append(c)
-    # extract the digit ROI
     roi = thresh[y:y+h, x:x + w]
-    dW = int(0.3 * w)
-    dH = int(0.3 * h)
+    gW = int(0.33 * w)
+    gH = int(0.33 * h)
     lW = int(0.15 * w)
     lH = int(0.15 * h)
     segments = [
-        ((lW, 0), (w, dH)),  # top
-        ((lW, 0), (dW, h // 2)),  # top-left
-        ((w - dW, dH), (w, h // 2)),  # top-right
-        ((dW, (h // 2) - lH), (w-dW, (h // 2) + lH)),  # center
-        ((lW, h // 2), (dW, h)),  # bottom-left
-        ((w - dW, h // 2), (w, h)),  # bottom-right
-        ((lW, h - dH), (w, h))  # bottom
+        ((lW, 0), (w - lW, gH)),  # top
+        ((lW, lH), (gW, h // 2)),  # top-left
+        ((w - gW, lH), (w - lW, h // 2)),  # top-right
+        ((gW, (h // 2) - lH), (w - gW, (h // 2) + lH)),  # center
+        ((lW, (h // 2) + lH), (gW, h - lH)),  # bottom-left
+        ((w - gW, (h // 2) + lH), (w - lW, h - lH)),  # bottom-right
+        ((gW, h - gH), (w - gW, h - lW))  # bottom
     ]
     on = [0] * len(segments)
     for (i, ((xA, yA), (xB, yB))) in enumerate(segments):
@@ -54,7 +48,7 @@ for image in images:
         if total / float(area) > 0.45:
             on[i] = 1
         print(on)
-    plt.figure("number")
+    plt.figure("ROI")
     plt.imshow(roi, cmap="gray")
     plt.show()
 
