@@ -6,16 +6,19 @@ This project is implemented using Python and OpenCV. It performs single digit re
 
 The code requires the following packages to be installed:
 
-  * imutils:
-      Which can be installed using the command:
-          pip install imutils
+* imutils:
 
-  * OpenCV:
-      Which can be installed using the command:
-          pip install opencv-python
+       Which can be installed using the command:
+           pip install imutils
 
-  * matplotlib:
-      Which can be installed using the command:
-          pip install matplotlib
+* OpenCV:
+
+       Which can be installed using the command:
+            pip install opencv-python
+
+* matplotlib:
+
+       Which can be installed using the command:
+            pip install matplotlib
 
 After that, run the code in your favorite IDE.
